@@ -392,7 +392,7 @@ function App() {
             </div>
             {selectedJob?.komboId === "kombo-uuid-bb22" && (
               <div className="lesson">
-                <strong>Bug #2 — Stale sync data:</strong> Kombo's last sync was
+                <strong>Bug #2 - Stale sync data:</strong> Kombo's last sync was
                 3 days ago, so the job still appeared "open" locally. In
                 reality the ATS archived it yesterday. Build in freshness
                 checks or force a re-sync before critical operations.
