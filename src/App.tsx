@@ -384,7 +384,7 @@ function App() {
           <div className="resolution-panel">
             <h4>Resolution Summary</h4>
             <div className="lesson">
-              <strong>Bug #1 — Wrong ID type:</strong> The app sent Kombo's
+              <strong>Bug #1 - Wrong ID type:</strong> The app sent Kombo's
               internal UUID (<code>komboId</code>) to the ATS, which expects its
               own provider ID (<code>remoteId</code>). Always use the{" "}
               <code>remote_id</code> field when making calls that reach the
