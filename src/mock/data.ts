@@ -31,10 +31,24 @@ export interface AtsApiResponse {
 }
 
 export interface LogEntry {
+  id: string;
   timestamp: string;
   level: "info" | "warn" | "error" | "success";
   message: string;
   detail?: string;
+}
+
+export interface IdMapping {
+  komboId: string;
+  remoteId: string | null;
+  atsJob: AtsJob | null;
+}
+
+export interface AtsJobStatus {
+  found: boolean;
+  atsJobId: string;
+  status?: string;
+  archivedAt?: string | null;
 }
 
 export type DebugStep =

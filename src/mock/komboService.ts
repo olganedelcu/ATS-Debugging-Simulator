@@ -4,6 +4,8 @@ import {
   type KomboSyncedJob,
   type ApplicationPayload,
   type AtsApiResponse,
+  type IdMapping,
+  type AtsJobStatus,
 } from "./data";
 
 const SIMULATED_DELAY = 600;
@@ -63,11 +65,7 @@ export async function submitApplication(
 /** Debug helper: show how a Kombo ID maps to a remote ATS ID. */
 export async function lookupIdMapping(
   komboId: string
-): Promise<{
-  komboId: string;
-  remoteId: string | null;
-  atsJob: (typeof atsJobs)[number] | null;
-}> {
+): Promise<IdMapping> {
   await delay(300);
   const synced = komboSyncedJobs.find((j) => j.komboId === komboId);
   if (!synced) return { komboId, remoteId: null, atsJob: null };
@@ -78,7 +76,7 @@ export async function lookupIdMapping(
 /** Debug helper: check current status of a job directly in the ATS. */
 export async function checkJobStatus(
   atsJobId: string
-): Promise<{ found: boolean; atsJobId: string; status?: string; archivedAt?: string | null }> {
+): Promise<AtsJobStatus> {
   await delay(300);
   const job = atsJobs.find((j) => j.atsJobId === atsJobId);
   if (!job) return { found: false, atsJobId };
