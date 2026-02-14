@@ -1,7 +1,7 @@
 import {
   atsJobs,
-  komboSyncedJobs,
-  type KomboSyncedJob,
+  syncedJobs,
+  type SyncedJob,
   type ApplicationPayload,
   type AtsApiResponse,
   type IdMapping,
@@ -14,17 +14,17 @@ function delay(ms = SIMULATED_DELAY): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-/** returns the list of jobs as seen through Kombo's sync layer. */
-export async function getSyncedJobs(): Promise<KomboSyncedJob[]> {
+/** returns the list of jobs as seen through the sync layer. */
+export async function getSyncedJobs(): Promise<SyncedJob[]> {
   await delay();
-  return komboSyncedJobs;
+  return syncedJobs;
 }
 
 /**
- * Submit an application via Kombo → ATS.
+ * Submit an application via the sync layer → ATS.
  *
  * Bug surface:
- * - If `payload.jobId` is a komboId (not an atsJobId), the ATS won't find it.
+ * - If `payload.jobId` is an internalId (not an atsJobId), the ATS won't find it.
  * - If the ATS job is archived, the application is rejected even with the right ID.
  */
 export async function submitApplication(
@@ -62,15 +62,15 @@ export async function submitApplication(
   };
 }
 
-/** Debug helper: show how a Kombo ID maps to a remote ATS ID. */
+/** Debug helper: show how an internal ID maps to a remote ATS ID. */
 export async function lookupIdMapping(
-  komboId: string
+  internalId: string
 ): Promise<IdMapping> {
   await delay(300);
-  const synced = komboSyncedJobs.find((j) => j.komboId === komboId);
-  if (!synced) return { komboId, remoteId: null, atsJob: null };
+  const synced = syncedJobs.find((j) => j.internalId === internalId);
+  if (!synced) return { internalId, remoteId: null, atsJob: null };
   const atsJob = atsJobs.find((j) => j.atsJobId === synced.remoteId) ?? null;
-  return { komboId, remoteId: synced.remoteId, atsJob };
+  return { internalId, remoteId: synced.remoteId, atsJob };
 }
 
 /** Debug helper: check current status of a job directly in the ATS. */

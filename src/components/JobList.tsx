@@ -1,21 +1,21 @@
-import type { KomboSyncedJob } from "../mock/data";
+import type { SyncedJob } from "../mock/data";
 import { JobCard } from "./JobCard";
 
 interface JobListProps {
-  jobs: KomboSyncedJob[];
+  jobs: SyncedJob[];
   selectedJobId: string | null;
-  onSelectJob: (job: KomboSyncedJob) => void;
+  onSelectJob: (job: SyncedJob) => void;
 }
 
 export function JobList({ jobs, selectedJobId, onSelectJob }: JobListProps) {
   return (
     <div className="job-list">
-      <h3>Kombo Synced Jobs</h3>
+      <h3>Synced Jobs</h3>
       {jobs.map((job) => (
         <JobCard
-          key={job.komboId}
+          key={job.internalId}
           job={job}
-          isSelected={job.komboId === selectedJobId}
+          isSelected={job.internalId === selectedJobId}
           onClick={() => onSelectJob(job)}
         />
       ))}

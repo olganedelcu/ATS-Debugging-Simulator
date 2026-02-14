@@ -4,18 +4,18 @@ import type {
   AtsJobStatus,
   DebugStep,
   IdMapping,
-  KomboSyncedJob,
+  SyncedJob,
   LogEntry,
 } from "../mock/data";
 import {
   submitApplication,
   lookupIdMapping,
   checkJobStatus,
-} from "../mock/komboService";
+} from "../mock/syncService";
 
 export interface DebugFlowState {
   step: DebugStep;
-  selectedJob: KomboSyncedJob | null;
+  selectedJob: SyncedJob | null;
   lastResponse: AtsApiResponse | null;
   lastPayload: Record<string, string> | null;
   idMapping: IdMapping | null;
@@ -25,7 +25,7 @@ export interface DebugFlowState {
 }
 
 type DebugFlowAction =
-  | { type: "SELECT_JOB"; job: KomboSyncedJob }
+  | { type: "SELECT_JOB"; job: SyncedJob }
   | { type: "SET_LOADING" }
   | { type: "SUBMIT_SUCCESS"; response: AtsApiResponse; payload: Record<string, string> }
   | { type: "SUBMIT_FAILURE"; response: AtsApiResponse; payload: Record<string, string>; isArchived: boolean }
@@ -87,7 +87,7 @@ export function useDebugFlow(log: LogFn, clearLogs: () => void) {
     if (!state.selectedJob) return;
     dispatch({ type: "SET_LOADING" });
 
-    const jobId = state.useFixedId ? state.selectedJob.remoteId : state.selectedJob.komboId;
+    const jobId = state.useFixedId ? state.selectedJob.remoteId : state.selectedJob.internalId;
     const payload = {
       job_id: jobId,
       candidate_name: "Jane Doe",
@@ -110,8 +110,8 @@ export function useDebugFlow(log: LogFn, clearLogs: () => void) {
   async function handleTraceIds() {
     if (!state.selectedJob) return;
     dispatch({ type: "SET_LOADING" });
-    const mapping = await lookupIdMapping(state.selectedJob.komboId);
-    log("warn", `ID mapping: komboId=${mapping.komboId} → remoteId=${mapping.remoteId}`, `ATS job found: ${!!mapping.atsJob}`);
+    const mapping = await lookupIdMapping(state.selectedJob.internalId);
+    log("warn", `ID mapping: internalId=${mapping.internalId} → remoteId=${mapping.remoteId}`, `ATS job found: ${!!mapping.atsJob}`);
     dispatch({ type: "TRACE_IDS_COMPLETE", mapping });
   }
 
@@ -132,13 +132,13 @@ export function useDebugFlow(log: LogFn, clearLogs: () => void) {
   }
 
   function handleApplyFix() {
-    log("success", "Fix applied: now using remoteId instead of komboId");
+    log("success", "Fix applied: now using remoteId instead of internalId");
     dispatch({ type: "APPLY_FIX" });
   }
 
-  function handleSelectJob(job: KomboSyncedJob) {
+  function handleSelectJob(job: SyncedJob) {
     dispatch({ type: "SELECT_JOB", job });
-    log("info", `Selected: ${job.title}`, `komboId: ${job.komboId}`);
+    log("info", `Selected: ${job.title}`, `internalId: ${job.internalId}`);
   }
 
   function handleAdvanceStep(step: DebugStep) {

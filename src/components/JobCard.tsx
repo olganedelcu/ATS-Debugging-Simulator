@@ -1,7 +1,7 @@
-import type { KomboSyncedJob } from "../mock/data";
+import type { SyncedJob } from "../mock/data";
 
 interface JobCardProps {
-  job: KomboSyncedJob;
+  job: SyncedJob;
   isSelected: boolean;
   onClick: () => void;
 }
@@ -15,7 +15,7 @@ export function JobCard({ job, isSelected, onClick }: JobCardProps) {
       <div className="job-title">{job.title}</div>
       <div className="job-meta">
         <span className={`badge ${job.status}`}>{job.status}</span>
-        <code className="mono">{job.komboId}</code>
+        <code className="mono">{job.internalId}</code>
       </div>
       <div className="job-sync">
         Last synced: {new Date(job.lastSyncedAt).toLocaleDateString()}

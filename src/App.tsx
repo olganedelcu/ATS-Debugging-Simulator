@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import type { KomboSyncedJob } from "./mock/data";
-import { getSyncedJobs } from "./mock/komboService";
+import type { SyncedJob } from "./mock/data";
+import { getSyncedJobs } from "./mock/syncService";
 import { useLogger } from "./hooks/useLogger";
 import { useDebugFlow } from "./hooks/useDebugFlow";
 import { StepBar } from "./components/StepBar";
@@ -12,7 +12,7 @@ import { DebugActions } from "./components/DebugActions";
 import { LogConsole } from "./components/LogConsole";
 
 function App() {
-  const [jobs, setJobs] = useState<KomboSyncedJob[]>([]);
+  const [jobs, setJobs] = useState<SyncedJob[]>([]);
   const { logs, log, clearLogs } = useLogger();
   const {
     state,
@@ -28,14 +28,14 @@ function App() {
   useEffect(() => {
     getSyncedJobs().then((data) => {
       setJobs(data);
-      log("info", "Loaded synced jobs from Kombo", `${data.length} jobs`);
+      log("info", "Loaded synced jobs", `${data.length} jobs`);
     });
   }, [log]);
 
   return (
     <div className="app">
       <header>
-        <h1>Kombo ATS Debugging Simulator</h1>
+        <h1>ATS Debugging Simulator</h1>
         <p className="subtitle">Find and fix the integration bugs</p>
       </header>
 
@@ -45,7 +45,7 @@ function App() {
         <div className="panel left">
           <JobList
             jobs={jobs}
-            selectedJobId={state.selectedJob?.komboId ?? null}
+            selectedJobId={state.selectedJob?.internalId ?? null}
             onSelectJob={handleSelectJob}
           />
           {state.selectedJob && (

@@ -1,11 +1,11 @@
-import type { AtsJobStatus, DebugStep, IdMapping, KomboSyncedJob } from "../mock/data";
+import type { AtsJobStatus, DebugStep, IdMapping, SyncedJob } from "../mock/data";
 import { Hint } from "./Hint";
 import { MappingTable } from "./MappingTable";
 import { ResolutionPanel } from "./ResolutionPanel";
 
 interface DebugActionsProps {
   step: DebugStep;
-  selectedJob: KomboSyncedJob | null;
+  selectedJob: SyncedJob | null;
   lastPayload: Record<string, string> | null;
   idMapping: IdMapping | null;
   atsStatus: AtsJobStatus | null;
@@ -51,7 +51,7 @@ export function DebugActions({
             {JSON.stringify(lastPayload, null, 2)}
           </pre>
           <Hint variant="warn">
-            Look at the <code>job_id</code> value. Does it look like a Kombo
+            Look at the <code>job_id</code> value. Does it look like an
             internal UUID or an ATS provider ID?
           </Hint>
           <button className="btn" onClick={onTraceIds}>
@@ -65,13 +65,13 @@ export function DebugActions({
           <h4>ID Mapping</h4>
           <MappingTable
             rows={[
-              { label: "Kombo ID (internal)", value: <code className="mono buggy-id">{idMapping.komboId}</code> },
+              { label: "Internal ID", value: <code className="mono buggy-id">{idMapping.internalId}</code> },
               { label: "Remote ID (ATS)", value: <code className="mono fixed-id">{idMapping.remoteId}</code> },
               { label: "ATS Job exists?", value: idMapping.atsJob ? "Yes" : "No" },
             ]}
           />
           <Hint variant="info">
-            The API received <code>{idMapping.komboId}</code> but the ATS
+            The API received <code>{idMapping.internalId}</code> but the ATS
             expects <code>{idMapping.remoteId}</code>. These are different!
           </Hint>
           <button className="btn" onClick={onCheckStatus}>
@@ -97,7 +97,7 @@ export function DebugActions({
           />
           {atsStatus.status === "archived" && (
             <Hint variant="warn">
-              This job was archived in the ATS, but Kombo's sync data still
+              This job was archived in the ATS, but the sync data still
               shows it as "open" (last synced 3 days ago). This is the second
               bug — stale sync data!
             </Hint>
@@ -112,8 +112,8 @@ export function DebugActions({
         <div className="inspect-panel">
           <Hint variant="success">
             Fix applied! The payload will now send <code>{selectedJob.remoteId}</code>{" "}
-            (the ATS provider's ID) instead of <code>{selectedJob.komboId}</code>{" "}
-            (Kombo's internal ID). Click Submit to retry.
+            (the ATS provider's ID) instead of <code>{selectedJob.internalId}</code>{" "}
+            (the internal ID). Click Submit to retry.
           </Hint>
         </div>
       )}
@@ -122,7 +122,7 @@ export function DebugActions({
         <div className="inspect-panel">
           <Hint variant="warn">
             Bug #1 is fixed (correct ID), but now the ATS says the job is{" "}
-            <strong>archived</strong>. Kombo's synced data was stale — it
+            <strong>archived</strong>. The synced data was stale — it
             showed the job as "open" because the last sync was 3 days ago, but
             the ATS archived it yesterday.
           </Hint>
@@ -138,7 +138,7 @@ export function DebugActions({
 
       {step === "resolved" && selectedJob && (
         <ResolutionPanel
-          selectedJobKomboId={selectedJob.komboId}
+          selectedJobInternalId={selectedJob.internalId}
           onReset={onReset}
         />
       )}

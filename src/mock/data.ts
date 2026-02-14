@@ -9,8 +9,8 @@ export interface AtsJob {
   location: string;
 }
 
-export interface KomboSyncedJob {
-  komboId: string;
+export interface SyncedJob {
+  internalId: string;
   remoteId: string;
   title: string;
   status: "open" | "archived";
@@ -39,7 +39,7 @@ export interface LogEntry {
 }
 
 export interface IdMapping {
-  komboId: string;
+  internalId: string;
   remoteId: string | null;
   atsJob: AtsJob | null;
 }
@@ -100,25 +100,25 @@ export const atsJobs: AtsJob[] = [
   },
 ];
 
-// lombo synced jobs (what your app sees via Kombo) 
+// synced jobs (what your app sees via the sync layer)
 
-export const komboSyncedJobs: KomboSyncedJob[] = [
+export const syncedJobs: SyncedJob[] = [
   {
-    komboId: "kombo-uuid-aa11",
+    internalId: "sync-uuid-aa11",
     remoteId: "green-ats-4821",
     title: "Senior Frontend Engineer",
     status: "open",
     lastSyncedAt: daysAgo(0),
   },
   {
-    komboId: "kombo-uuid-bb22",
+    internalId: "sync-uuid-bb22",
     remoteId: "green-ats-4822",
     title: "Staff Backend Engineer",
     status: "open", // stale! ATS archived it yesterday, but sync is 3 days old
     lastSyncedAt: daysAgo(3),
   },
   {
-    komboId: "kombo-uuid-cc33",
+    internalId: "sync-uuid-cc33",
     remoteId: "green-ats-4823",
     title: "Product Designer",
     status: "open",

@@ -1,7 +1,7 @@
-import type { DebugStep, KomboSyncedJob } from "../mock/data";
+import type { DebugStep, SyncedJob } from "../mock/data";
 
 interface SubmitFormProps {
-  selectedJob: KomboSyncedJob;
+  selectedJob: SyncedJob;
   useFixedId: boolean;
   loading: boolean;
   step: DebugStep;
@@ -17,7 +17,7 @@ export function SubmitForm({ selectedJob, useFixedId, loading, step, onSubmit }:
         <label>
           Job ID being sent:
           <code className={`mono ${useFixedId ? "fixed-id" : "buggy-id"}`}>
-            {useFixedId ? selectedJob.remoteId : selectedJob.komboId}
+            {useFixedId ? selectedJob.remoteId : selectedJob.internalId}
           </code>
           {useFixedId && <span className="badge success">fixed</span>}
         </label>

@@ -18,7 +18,7 @@ Instead of reading about API debugging, you experience it.
 
 ## What It Simulates
 
-You're integrating with an Applicant Tracking System (ATS) via the Kombo API.
+You're integrating with an Applicant Tracking System (ATS) via a unified sync layer.
 
 A job application submission fails.
 
@@ -28,7 +28,7 @@ Two realistic bugs:
 
 ### 1️⃣ Wrong ID Type
 
-Your app sends Kombo's internal `komboId`
+Your app sends the sync layer's internal `internalId`
 But the ATS expects the provider's `remoteId`.
 
 Everything compiles.
@@ -37,7 +37,7 @@ But it's the wrong ID for the boundary.
 
 ### 2️⃣ Stale Sync Data
 
-Kombo's cached job data is 3 days old.
+The cached job data is 3 days old.
 The job appears "open" in your UI.
 
 But in the ATS?
@@ -55,7 +55,7 @@ You go through a guided 9-step debugging workflow:
 2. Submit the application (it fails)
 3. Inspect logs
 4. Trace ID usage
-5. Compare `komboId` vs `remoteId`
+5. Compare `internalId` vs `remoteId`
 6. Check the ATS job status
 7. Discover stale sync
 8. Apply the fix
@@ -96,21 +96,39 @@ src/
 ├── main.tsx
 ├── App.tsx
 ├── App.css / index.css
+├── hooks/
+│   ├── useDebugFlow.ts
+│   └── useLogger.ts
+├── components/
+│   ├── StepBar.tsx
+│   ├── JobList.tsx / JobCard.tsx
+│   ├── SubmitForm.tsx / ResponseBox.tsx
+│   ├── DebugActions.tsx
+│   ├── LogConsole.tsx
+│   ├── MappingTable.tsx / Hint.tsx
+│   └── ResolutionPanel.tsx
 └── mock/
     ├── data.ts
-    └── komboService.ts
+    └── syncService.ts
 ```
 
 ### `App.tsx`
 
-Contains the entire UI and workflow logic (~435 lines).
-This is the brain of the simulator.
+Thin composition layer (~80 lines) that wires hooks to components.
+
+### `hooks/useDebugFlow.ts`
+
+State machine (useReducer) managing the entire debugging workflow.
+
+### `hooks/useLogger.ts`
+
+Log management with unique IDs and timestamps.
 
 ### `mock/data.ts`
 
-Strongly typed domain models + mock ATS/Kombo data.
+Strongly typed domain models + mock ATS data.
 
-### `mock/komboService.ts`
+### `mock/syncService.ts`
 
 Simulates API calls with realistic delays and failure states.
 
