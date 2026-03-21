@@ -31,6 +31,9 @@ function App() {
       log("info", "Loaded synced jobs", `${data.length} jobs`);
     });
   }, [log]);
+useEffect(() => {
+   return ()
+  }, );
 
   return (
     <div className="app">
